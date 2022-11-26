@@ -11,12 +11,18 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 
-const uri = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.davow0l.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.davow0l.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run() {
     try {
         const categoriesCollection = client.db('fiCar').collection('categories');
+
+        app.get('/homeCategories', async (req, res) => {
+            const query = {};
+            const result = await categoriesCollection.find(query).toArray();
+            res.send(result);
+        });
         
     }
     finally { }
