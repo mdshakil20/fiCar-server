@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { application } = require("express");
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 
 const app = express();
@@ -17,13 +17,29 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const categoriesCollection = client.db('fiCar').collection('categories');
+        const usersCollections = client.db('fiCar').collection('users');
 
+        //get first 3 categories for homepage
         app.get('/homeCategories', async (req, res) => {
             const query = {};
             const result = await categoriesCollection.find(query).toArray();
             res.send(result);
         });
-        
+
+        //get cars by category
+        app.get('/category/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id : ObjectId(id)};
+            const findCategory = await categoriesCollection.find(query).toArray();
+            res.send(findCategory);
+        });
+
+        //user information store method
+        app.post('/user', async(req, res)=>{
+            const user = req.body;
+            const result = await usersCollections.insertOne(user);
+            res.send(result); 
+        })
     }
     finally { }
 
