@@ -68,6 +68,29 @@ async function run() {
             res.send(result);
         });
 
+        //get all buyers
+        app.get('/buyers', async (req, res) => {
+            const query = { role: 'user' }
+            const result = await usersCollections.find(query).toArray();
+            res.send(result);
+        });
+
+
+        //get all buyers
+        app.get('/seller', async (req, res) => {
+            const query = { role: 'seller' }
+            const result = await usersCollections.find(query).toArray();
+            res.send(result);
+        });
+
+
+        //delete a user( buyer and seller)
+        app.delete('/user/delete', async (req, res) => {
+            const id = req.query.id;
+            const query = { _id: ObjectId(id) }
+            const result = await usersCollections.deleteOne(query);
+            res.send(result);
+        });
 
         //delete my product
         app.delete('/products/delete', async (req, res) => {
