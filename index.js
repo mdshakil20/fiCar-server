@@ -83,6 +83,21 @@ async function run() {
             res.send(result);
         });
 
+        
+        //update api 
+        app.put('/seller/verify', async (req, res) => {
+            const id = req.query.id;
+            const filter = { _id: ObjectId(id) };
+            const option = { upsert: true };
+            const makeVerify = {
+                $set: {
+                    isVerify: 'verified'
+                }
+            }
+            const result = await usersCollections.updateOne(filter, makeVerify, option);
+            res.send(result);
+        })
+
 
         //delete a user( buyer and seller)
         app.delete('/user/delete', async (req, res) => {
