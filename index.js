@@ -61,14 +61,23 @@ async function run() {
         })
 
         //get for my products
-        app.get('/user/:email', async (req, res) => {
-            const uemail = req.params.email;
-            console.log(uemail);
-            const query = { email: uemail }
-            const result = await usersCollections.find(query).toArray();
-            console.log(result);
+        app.get('/products', async (req, res) => {
+            const email = req.query.email;
+            const query = { sellerEmail: email }
+            const result = await productsCollections.find(query).toArray();
             res.send(result);
         });
+
+
+        //delete my product
+        app.delete('/products/delete', async (req, res) => {
+            const id = req.query.id;
+            const query = { _id: ObjectId(id) }
+            const result = await productsCollections.deleteOne(query);
+            res.send(result);
+        });
+
+
         //product add -- write method
         app.post('/products', async (req, res) => {
             const item = req.body;
