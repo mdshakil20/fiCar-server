@@ -35,10 +35,10 @@ async function run() {
         });
 
         //get cars by category
-        app.get('/category/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) };
-            const findCategory = await categoriesCollection.find(query).toArray();
+        app.get('/category/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { category: name };
+            const findCategory = await productsCollections.find(query).toArray();
             res.send(findCategory);
         });
 
@@ -64,6 +64,15 @@ async function run() {
         app.get('/products', async (req, res) => {
             const email = req.query.email;
             const query = { sellerEmail: email }
+            const result = await productsCollections.find(query).toArray();
+            res.send(result);
+        });
+
+
+
+        //get all advertise products
+        app.get('/advertise', async (req, res) => {
+            const query = { isAd: 'yes' }
             const result = await productsCollections.find(query).toArray();
             res.send(result);
         });
@@ -95,6 +104,21 @@ async function run() {
                 }
             }
             const result = await usersCollections.updateOne(filter, makeVerify, option);
+            res.send(result);
+        })
+
+
+        //update api for advertagement
+        app.put('/makeAd', async (req, res) => {
+            const id = req.query.id;
+            const filter = { _id: ObjectId(id) };
+            const option = { upsert: true };
+            const makeVerify = {
+                $set: {
+                    isAdd: 'yes'
+                }
+            }
+            const result = await productsCollections.updateOne(filter, makeVerify, option);
             res.send(result);
         })
 
