@@ -18,6 +18,7 @@ async function run() {
     try {
         const categoriesCollection = client.db('fiCar').collection('categories');
         const usersCollections = client.db('fiCar').collection('users');
+        const productsCollections = client.db('fiCar').collection('products');
 
         //get first 3 categories for homepage
         app.get('/homeCategories', async (req, res) => {
@@ -26,19 +27,53 @@ async function run() {
             res.send(result);
         });
 
+        //get all categories
+        app.get('/allCategory', async (req, res) => {
+            const query = {};
+            const result = await categoriesCollection.find(query).toArray();
+            res.send(result);
+        });
+
         //get cars by category
         app.get('/category/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id : ObjectId(id)};
+            const query = { _id: ObjectId(id) };
             const findCategory = await categoriesCollection.find(query).toArray();
             res.send(findCategory);
         });
 
-        //user information store method
-        app.post('/user', async(req, res)=>{
+
+        //user information read method
+        app.get('/user/:email', async (req, res) => {
+            const uemail = req.params.email;
+            console.log(uemail);
+            const query = { email: uemail }
+            const result = await usersCollections.find(query).toArray();
+            console.log(result);
+            res.send(result);
+        });
+
+        //user information write method
+        app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await usersCollections.insertOne(user);
-            res.send(result); 
+            res.send(result);
+        })
+
+        //get for my products
+        app.get('/user/:email', async (req, res) => {
+            const uemail = req.params.email;
+            console.log(uemail);
+            const query = { email: uemail }
+            const result = await usersCollections.find(query).toArray();
+            console.log(result);
+            res.send(result);
+        });
+        //product add -- write method
+        app.post('/products', async (req, res) => {
+            const item = req.body;
+            const result = await productsCollections.insertOne(item);
+            res.send(result);
         })
     }
     finally { }
